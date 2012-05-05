@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Insecure QQ
+GenericName=不安全的QQ
+Exec=InsecureQQ
+Icon=/home/c0debreak/Projects/AutoBuilds/InsecureQQ/img/big.png
+Comment=WebQQ 克隆
+Categories=Network
+Type=Application
+StartupNotify=false
+Terminal=false

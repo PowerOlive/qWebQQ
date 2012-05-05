@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/big.png</file>
+        <file>img/emblem-pictures.png</file>
+        <file>img/font-x-generic.png</file>
+        <file>img/display-capplet.png</file>
+        <file>img/document-open-recent.png</file>
+        <file>img/network-workgroup.png</file>
+        <file>img/dlgedit.png</file>
+        <file>img/epiphany-bookmarks.png</file>
+        <file>img/small.png</file>
+        <file>img/offline.jpg</file>
+    </qresource>
+</RCC>
