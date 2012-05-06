@@ -257,25 +257,30 @@ void Widget::contactsInfoReady()
     QList<Contact*> contacts = _qq.getContacts();
     QVariantList categoryList = _qq.getCategories();
 
+#define ADD_CONTACT_ITEM(name,index) do { \
+    QTreeWidgetItem *topItem = new QTreeWidgetItem (QStringList() << name); \
+    cateMapping.insert(index , topItem); \
+    ui->wFriendsTree->addTopLevelItem(topItem);  \
+} while (0);
+
     QMap<int,QTreeWidgetItem*> cateMapping;
     foreach (QVariant cate , categoryList)
     {
-        QVariantMap mapA = cate.toMap();
-        QTreeWidgetItem *topItem = new QTreeWidgetItem (QStringList() << mapA["name"].toString());
-        int index = mapA["index"].toInt();
-
-        cateMapping.insert(index , topItem);
-        ui->wFriendsTree->addTopLevelItem(topItem);
+        QVariantMap mapA = cate.toMap();        
+        ADD_CONTACT_ITEM(mapA["name"].toString() , mapA["index"].toInt());
     }
 
+    /*! \brief default group ??? oh fuck tencent  bad deisgn */
     if ( ! cateMapping.contains(0) )
-        cateMapping.insert( 0 , new QTreeWidgetItem ( QStringList() << "My friends"));
+    {
+        ADD_CONTACT_ITEM("My Friends" , 0);
+    }
 
     foreach (Contact *contact , contacts)
     {
         if ( ! cateMapping.contains( contact->category) )
         {
-            qDebug() << "Interesting: this contact has no visible category: " << contact->displayName();
+            qDebug() << "Interesting: this contact has no visible category , using default one: " << contact->displayName();
             continue;
         }
 

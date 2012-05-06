@@ -68,7 +68,8 @@ public:
     Contact (const QString & uin = QString ()):
         treeItem (NULL),
         recentTreeItem(NULL),
-        status (offline)
+        status (offline),
+        category (-1)
     {
         this->uin = uin;
     }
