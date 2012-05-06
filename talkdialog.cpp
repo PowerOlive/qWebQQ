@@ -93,7 +93,7 @@ void TalkDialog::appendMessage(const QString &title, QString body, bool notify)
     {
     QProcess::startDetached("notify-send" ,
                             QStringList() << "--icon=/secure/Common/Pictures/icons/qq.png"
-                            << QString::fromUtf8("消息来自： %1").arg(title)
+                            << QString::fromUtf8("消息来自： %1").arg(ui->nick->text())
                             << body.left(10));
     }
 

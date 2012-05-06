@@ -348,6 +348,8 @@ void Widget::messageReceived(const QString &uin, const QString &body, int rTime)
                 return;
         }
 
+//        qDebug() << "Recv: " << rTime << "   but now: " << QDateTime::currentMSecsSinceEpoch();
+
         talkDialog->appendMessage(contact->displayName() + "  " + util->timeStr(rTime) , body );
         talkDialog->show();
     }

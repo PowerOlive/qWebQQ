@@ -69,10 +69,13 @@ public:
     }
 
     QVariant getGeneralResult (const QByteArray & data , const QString & debugInfo = QString());
-    QString timeStr (int secs = QDateTime::currentMSecsSinceEpoch())
+    QString timeStr (ulong secs = -1)
     {
         QDateTime dt;
-        dt.setMSecsSinceEpoch(secs);
+        if ( secs <= 0 )
+            dt.setMSecsSinceEpoch(QDateTime::currentMSecsSinceEpoch());
+        else
+            dt.setMSecsSinceEpoch(secs * 1000);
         return dt.toString("yyyy-MM-dd hh:mm:ss");
     }
 
