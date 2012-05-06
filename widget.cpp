@@ -305,6 +305,9 @@ void Widget::contactsInfoReady()
         cateMapping[contact->category]->addChild(contactItem);
         contact->treeItem = contactItem;
     }
+
+    _qq.fetchOnlineBuddies();
+
 }
 
 void Widget::on_wLogin_clicked()

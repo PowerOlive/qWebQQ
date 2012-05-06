@@ -80,15 +80,36 @@ public:
     void setStatus (const QString & txt)
     {
         status = util->stringToStatus(txt);
+        if ( treeItem != NULL )
+        {
+            if ( status != offline )
+            {
+                QTreeWidgetItem *parent = treeItem->parent();
+                parent->removeChild(treeItem);
+                parent->insertChild(0 , treeItem);
+            }
+            else
+            {
+                //TODO: check if it's last child
+                QTreeWidgetItem *parent = treeItem->parent();
+                parent->removeChild(treeItem);
+                parent->addChild(treeItem);
+            }
+        }
+
         update ();
     }
 
     void update()
     {
         if ( treeItem != NULL )
+        {
             treeItem->setIcon(0 , displayIcon());
+        }
         if ( recentTreeItem != NULL )
+        {
             recentTreeItem->setIcon(0 , displayIcon());
+        }
     }
 
     QIcon displayIcon ()
@@ -252,6 +273,8 @@ public:
     {
         return categoryList;
     }
+
+    void fetchOnlineBuddies ();
 
     Contact *findContact(const QString & uin)
     {

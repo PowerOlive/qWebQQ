@@ -351,6 +351,13 @@ void QQ::changeStatus(const ContactStatus &cs)
     _status = cs;
 }
 
+void QQ::fetchOnlineBuddies()
+{
+    GET_REQUEST3 ( QString(GET_ONLINE_BUDDIES)
+                   .arg(sessionMap["psessionid"].toString())
+                   .arg(QString(_clientid)));
+}
+
 void QQ::finished(QNetworkReply *reply)
 {
     int httpStatusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -592,10 +599,6 @@ void QQ::finished(QNetworkReply *reply)
                      + "&r=%7B%22vfwebqq%22%3A%22" + sessionMap["vfwebqq"].toByteArray()
                      + "%22%2C%22clientid%22%3A%22" + _clientid
                      + "%22%2C%22psessionid%22%3A%22" + sessionMap["psessionid"].toByteArray() + "%22%7D");
-
-        GET_REQUEST3 ( QString(GET_ONLINE_BUDDIES)
-                       .arg(sessionMap["psessionid"].toString())
-                       .arg(QString(_clientid)));
     }
     /*! \brief capcha */
     else if (url.startsWith("http://captcha.qq.com/getimage"))
@@ -614,7 +617,6 @@ void QQ::finished(QNetworkReply *reply)
             if ( contact != NULL )
             {
                 contact->setStatus(bMap["status"].toString());
-                contact->update();
             }
         }
 
