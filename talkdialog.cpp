@@ -81,6 +81,15 @@ void TalkDialog::keyPressEvent(QKeyEvent *e)
         }
 
         break;
+    case Qt::ALT:
+        switch (e->key())
+        {
+        case Qt::Key_S:
+            on_sendButton_clicked();
+            break;
+        }
+
+        break;
     default:
         break;
     }
