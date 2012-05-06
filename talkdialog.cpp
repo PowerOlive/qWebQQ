@@ -33,10 +33,14 @@ TalkDialog::TalkDialog(QQ *qq, const QString &uin, QWidget *parent) :
     QWidget(parent),
     forceClose (false),
     _uin (uin),
-    ui(new Ui::TalkDialog)
+    ui(new Ui::TalkDialog),
+    _enableEncryption (false)
 {
     ui->setupUi(this);
     _qq = qq;
+
+    encrypter.setProvider(new Base64Provider());
+    encrypter.setALgorithmPrefix("^ENC^:");
 
     inputNotifyTimer.setInterval(3 * 1000);
     connect (&inputNotifyTimer , SIGNAL(timeout())  , SLOT(resetWindowTitle()));
@@ -82,10 +86,19 @@ void TalkDialog::keyPressEvent(QKeyEvent *e)
     }
 }
 
-void TalkDialog::appendMessage(const QString &title, const QString &body)
+void TalkDialog::appendMessage(const QString &title, QString body, bool notify)
 {
+    body = encrypter.decrypt(body);
+    if ( notify && ! isHidden() )
+    {
+    QProcess::startDetached("notify-send" ,
+                            QStringList() << "--icon=/secure/Common/Pictures/icons/qq.png"
+                            << QString::fromUtf8("消息来自： %1").arg(title)
+                            << body.left(10));
+    }
+
     ui->textEdit->append("<font color='blue'>" + title + "</font>");
-    ui->textEdit->append(body);
+    ui->textEdit->append( body );
 }
 
 void TalkDialog::setFaceImage(const QPixmap &px)
@@ -121,8 +134,11 @@ void TalkDialog::on_closeButton_clicked()
 
 void TalkDialog::on_sendButton_clicked()
 {
-    const QString & body = ui->myTextBox->toPlainText();
-    appendMessage( _qq->personalInfo("nick").toString() + " " + util->timeStr() , body );
+    QString body = ui->myTextBox->toPlainText();
+    if ( _enableEncryption )
+        body = encrypter.encrypt(body);
+
+    appendMessage( _qq->personalInfo("nick").toString() + " " + util->timeStr() , body , false );
 
     _qq->sendMessage(_uin , body);
     ui->myTextBox->clear();
@@ -132,11 +148,16 @@ void TalkDialog::on_toolButton_3_clicked()
 {
     _qq->shakeHisWindow(_uin);
     appendMessage(_qq->personalInfo("nick").toString() + " " + util->timeStr() ,
-                  QString::fromUtf8("您发送了一个窗口震动"));
+                  QString::fromUtf8("您发送了一个窗口震动") , false);
 }
 
 void TalkDialog::on_historyButton_clicked()
 {
     RemoteLogViewer *logViewer = new RemoteLogViewer (_qq);
     logViewer->show();
+}
+
+void TalkDialog::on_enableEncryption_toggled(bool checked)
+{
+    _enableEncryption = checked;
 }

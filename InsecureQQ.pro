@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     displaycapcha.cpp \
     relogin.cpp \
     remotelogviewer.cpp \
-    preferencedialog.cpp
+    preferencedialog.cpp \
+    encrypter.cpp
 
 HEADERS  += widget.h \
     util.h \
@@ -27,7 +28,8 @@ HEADERS  += widget.h \
     displaycapcha.h \
     relogin.h \
     remotelogviewer.h \
-    preferencedialog.h
+    preferencedialog.h \
+    encrypter.h
 
 FORMS    += \
     widget.ui \

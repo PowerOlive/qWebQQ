@@ -29,8 +29,11 @@
 
 #include <QWidget>
 #include <QKeyEvent>
-#include "qq.h"
+#include <QProcess>
 #include <QTimer>
+
+#include "qq.h"
+#include "encrypter.h"
 
 namespace Ui {
 class TalkDialog;
@@ -52,7 +55,7 @@ public:
 
     void insertPicture (const QString & title , const QString & id , const QByteArray & data);
 
-    void appendMessage (const QString & title , const QString & body);
+    void appendMessage (const QString & title , QString body , bool notify = true);
     void appendHTML (const QString & title , const QString & body);
 
     void setNick (const QString & nick);
@@ -75,6 +78,8 @@ private slots:
         setWindowTitle(_title);
     }
 
+    void on_enableEncryption_toggled(bool checked);
+
 signals:
     void aboutToClose ();
 
@@ -87,6 +92,12 @@ private:
     QTimer inputNotifyTimer;
     QQ *_qq;
     QString _title;
+    bool _enableEncryption;
+
+    /*!
+        \brief provide encryption
+    */
+    Encrypter encrypter;
 };
 
 #endif // TALKDIALOG_H

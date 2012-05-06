@@ -73,7 +73,7 @@ public:
     {
         QDateTime dt;
         dt.setMSecsSinceEpoch(secs);
-        return dt.toString("hh:mm:ss");
+        return dt.toString("yyyy-MM-dd hh:mm:ss");
     }
 
     ContactStatus stringToStatus (const QString & qs)

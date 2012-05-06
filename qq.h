@@ -218,7 +218,7 @@ public:
     /*!
         \brief send message to contacts
     */
-    void sendMessage (const QString & uin , const QString & body);
+    void sendMessage (const QString & uin , const QString &body);
 
     /*!
        \brief shake window message

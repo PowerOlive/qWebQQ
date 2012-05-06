@@ -132,8 +132,9 @@ void QQ::logout()
     }
 }
 
-void QQ::sendMessage (const QString &uin, const QString &body)
+void QQ::sendMessage (const QString &uin, const QString & body)
 {
+
     QByteArray postData = "r=%7B%22to%22%3A" + uin.toAscii() + "%2C%22face%22%3A594%2C%22content%22%3A%22%5B%5C%22"
             + body.toUtf8() + "%5C%5Cr%5C%5Cn%5C%22%2C%5B%5C%22font%5C%22%2C%7B%5C%22name%5C%22%3A%5C%22%5C%5C%5C%22%E5%AE%8B%E4%BD%93%5C%5C%5C%22%5C%22%2C%5C%22size%5C%22%3A%5C%2210%5C%22%2C%5C%22style%5C%22%3A%5B0%2C0%2C0%5D%2C%5C%22color%5C%22%3A%5C%22000000%5C%22%7D%5D%5D%22%2C%22msg_id%22%3A"
             + QString::number(_messageID).toAscii()
@@ -198,6 +199,7 @@ void QQ::readyReadPoll()
                 QVariantList contList = cont.toList();
                 if ( contList.isEmpty() )
                 {
+                    /* decrypt message */
                     message.append( cont.toString() );
                 }
                 else if ( contList[0].toString() == "offpic" )
@@ -214,6 +216,16 @@ void QQ::readyReadPoll()
             message = message.trimmed().remove(QRegExp ("\n+$"));
             if ( ! message.isEmpty() )
             {
+//                if (message.startsWith("^EN^:"))
+//                {
+//                    message = QString::fromUtf8( QByteArray::fromBase64(message.remove("^EN^:").toAscii()) );
+//                    qDebug() << "Encrypted Message: " << message;
+//                }
+//                else
+//                {
+//                    qDebug() << "Normal Message: " << message;
+//                }
+
                 emit messageReceived(from_uin, message , valueMap["time"].toInt());
             }
 

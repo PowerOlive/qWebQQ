@@ -131,11 +131,6 @@ void Widget::saveSettings()
 {
     QSettings settings;
     settings.beginGroup("Login");
-    if ( ui->wAutoLogin->isChecked() )
-    {
-        settings.setValue("AutoLogin" , true);
-    }
-
     if ( true == settings.value("RememberPass" , false).toBool() )
     {
         settings.setValue("QQ" , ui->wQQ->text());
@@ -273,8 +268,17 @@ void Widget::contactsInfoReady()
         ui->wFriendsTree->addTopLevelItem(topItem);
     }
 
+    if ( ! cateMapping.contains(0) )
+        cateMapping.insert( 0 , new QTreeWidgetItem ( QStringList() << "My friends"));
+
     foreach (Contact *contact , contacts)
     {
+        if ( ! cateMapping.contains( contact->category) )
+        {
+            qDebug() << "Interesting: this contact has no visible category: " << contact->displayName();
+            continue;
+        }
+
         QTreeWidgetItem *contactItem = new QTreeWidgetItem ( QStringList() << contact->displayName() );
         contactItem->setData(0 , Qt::UserRole , contact->uin);
         contactItem->setIcon(0 , contact->displayIcon());
@@ -287,6 +291,14 @@ void Widget::on_wLogin_clicked()
 {
     if ( ui->wQQ->text().isEmpty() || ui->wPassword->text().isEmpty() )
         return;
+
+    QSettings settings;
+    settings.beginGroup("Login");
+    if ( ui->wAutoLogin->isChecked() )
+    {
+        settings.setValue("AutoLogin" , true);
+    }
+    settings.endGroup();
 
     _qq.login(ui->wQQ->text() , ui->wPassword->text() , util->stringToStatus(ui->wLoginStatus->currentText()));
 }
@@ -324,22 +336,11 @@ void Widget::messageReceived(const QString &uin, const QString &body, int rTime)
     }
     else
     {
-        TalkDialog *talkDialog = talkDialogMapping[uin];
+        TalkDialog *talkDialog = setupTalkDialog(uin);
         if ( talkDialog == NULL )
         {
-            talkDialog = setupTalkDialog(uin);
-            if ( talkDialog == NULL )
-            {
                 qDebug() << "messageReceived: ERROR: talk dialog shouldn't be null , uin: " << uin;
                 return;
-            }
-        }
-        else
-        {
-            QProcess::startDetached("notify-send" ,
-                                    QStringList() << "--icon=/secure/Common/Pictures/icons/qq.png"
-                                    << QString::fromUtf8("消息来自： ") + contact->displayName()
-                                    << body.left(10));
         }
 
         talkDialog->appendMessage(contact->displayName() + "  " + util->timeStr(rTime) , body );
