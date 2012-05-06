@@ -57,6 +57,8 @@ Widget::Widget(QWidget *parent) :
         on_wLogin_clicked();
 
     ui->stackedWidget->setCurrentIndex(0);
+    ui->statusEditStack->setCurrentIndex(0);
+
     ui->tabWidget->setCurrentIndex(0);
 }
 
@@ -377,7 +379,8 @@ void Widget::statusChanged(ContactStatus status)
     default:
         ui->stackedWidget->setCurrentIndex(1);
         ui->wNicknameLine->setText(_qq.personalInfo("nick").toString());
-        ui->wStatusLine->setText(_qq.personalInfo("lnick").toString());
+        ui->wStatusLine->setText("<a href='#'>" + _qq.personalInfo("lnick").toString() + "</a>");
+        ui->wStatusLineEdit->setText(_qq.personalInfo("lnick").toString());
         break;
     }
 }
@@ -426,4 +429,24 @@ void Widget::on_toolButton_clicked()
     prefDlg->exec();
 
     delete prefDlg;
+}
+
+void Widget::on_wStatusLine_linkActivated(const QString &link)
+{
+    Q_UNUSED (link)
+    ui->statusEditStack->setCurrentIndex(1);
+}
+
+void Widget::on_wStatusLineEdit_returnPressed()
+{
+    const QString & prevStatus = ui->wStatusLine->text();
+    const QString & newStatus = ui->wStatusLineEdit->text();
+
+    if ( prevStatus != newStatus )
+    {
+        ui->wStatusLine->setText("<a href='#'>" + newStatus + "</a>");
+        _qq.setLongNick(newStatus);
+    }
+
+    ui->statusEditStack->setCurrentIndex(0);
 }

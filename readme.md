@@ -12,6 +12,7 @@ InsecureQQ: use it at your own risk.
 * Image receiving (Won't display anything with a failed link)
 * Offline file receiving
 * Unlimited screen shaking (Fuck tencent for this feature)
+* Chaning "long nick"
 * Optional transmission encryption support
 	* For further encryption algorithms , implement your own EncryptionProvider
 

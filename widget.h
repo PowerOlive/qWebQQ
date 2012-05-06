@@ -151,6 +151,10 @@ private slots:
 
     void on_toolButton_clicked();
 
+    void on_wStatusLine_linkActivated(const QString &link);
+
+    void on_wStatusLineEdit_returnPressed();
+
 private:
     Ui::Widget *ui;
     QQ _qq;

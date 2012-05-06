@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     relogin.cpp \
     remotelogviewer.cpp \
     preferencedialog.cpp \
-    encrypter.cpp
+    encrypter.cpp \
+    editablelabel.cpp
 
 HEADERS  += widget.h \
     util.h \
@@ -29,7 +30,8 @@ HEADERS  += widget.h \
     relogin.h \
     remotelogviewer.h \
     preferencedialog.h \
-    encrypter.h
+    encrypter.h \
+    editablelabel.h
 
 FORMS    += \
     widget.ui \
@@ -37,7 +39,8 @@ FORMS    += \
     displaycapcha.ui \
     relogin.ui \
     remotelogviewer.ui \
-    preferencedialog.ui
+    preferencedialog.ui \
+    editablelabel.ui
 
 RESOURCES += \
     resources.qrc

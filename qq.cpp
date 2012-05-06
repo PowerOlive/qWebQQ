@@ -38,6 +38,7 @@
 #define GET_USER_FRIENDS "http://s.web2.qq.com/api/get_user_friends2"
 #define RECENT_CONTACTS "http://d.web2.qq.com/channel/get_recent_list2"
 #define SEND_BUDDY_MSG "http://d.web2.qq.com/channel/send_buddy_msg2"
+#define SET_LONG_NICK "http://s.web2.qq.com/api/set_long_nick2"
 
 #define QQ_LOGOUT "http://d.web2.qq.com/channel/logout2?ids=&clientid=%1&psessionid=%2"
 
@@ -118,6 +119,14 @@ QQ::QQ(QObject *parent) :
 {
     nam->setCookieJar(new QNetworkCookieJar(this));
     connect (nam , SIGNAL(finished(QNetworkReply*)) , SLOT(finished(QNetworkReply*)));
+}
+
+void QQ::setLongNick(const QString &lnick)
+{
+    QByteArray postData ("r=%7B%22nlk%22%3A%22" + lnick.toUtf8() + "%22%2C%22vfwebqq%22%3A%22" +
+                         sessionMap["vfwebqq"].toByteArray() + "%22%7D");
+
+    POST_REQUEST ( QString(SET_LONG_NICK) , postData);
 }
 
 QVariant QQ::personalInfo(const QString &field)
@@ -649,6 +658,14 @@ void QQ::finished(QNetworkReply *reply)
             QVariantMap lMap = l.toMap();
             /// WARNING: choose between to_uin and uin ??
             emit longNickFetched(lMap["uin"].toString() , lMap["lnick"].toString());
+        }
+    }
+    /*! set long nick */
+    else if (url.startsWith("http://s.web2.qq.com/api/set_long_nick2"))
+    {
+        if ( ! data.contains(":0}") )
+        {
+            error ("set long nick failed: " + data);
         }
     }
     else

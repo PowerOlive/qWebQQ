@@ -195,6 +195,7 @@ public:
     /*!
         \brief fetch status string
     */
+    void setLongNick (const QString & lnick);
     void fetchLongNick (const QString & uin);
 
     /*!
