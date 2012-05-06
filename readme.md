@@ -5,6 +5,7 @@ InsecureQQ: use it at your own risk.
 
 [ Security Warning ]
 * All communication in local area network are visible to network administrators
+* using notify-send rather than libnotify API 
 
 [ Feature Enabled ]
 * Image receiving (Won't display anything with a failed link)
