@@ -231,12 +231,13 @@ void Widget::recentContactsReady()
         if (contact == NULL)
         {
             qDebug() << "ERROR: contact " << (*it).second << " not found , but in recent contact userlist";
-            continue;
         }
-
-        QTreeWidgetItem *item = new QTreeWidgetItem (*(contact->treeItem));
-        contact->recentTreeItem = item;
-        ui->wRecentTree->addTopLevelItem(item);
+        else
+        {
+            QTreeWidgetItem *item = new QTreeWidgetItem (*(contact->treeItem));
+            contact->recentTreeItem = item;
+            ui->wRecentTree->addTopLevelItem(item);
+        }
 
         ++ it;
     }
@@ -281,7 +282,7 @@ void Widget::contactsInfoReady()
     QMap<int,QTreeWidgetItem*> cateMapping;
     foreach (QVariant cate , categoryList)
     {
-        QVariantMap mapA = cate.toMap();        
+        QVariantMap mapA = cate.toMap();
         ADD_CONTACT_ITEM(mapA["name"].toString() , mapA["index"].toInt());
     }
 
@@ -362,11 +363,11 @@ void Widget::messageReceived(const QString &uin, const QString &body, int rTime)
         TalkDialog *talkDialog = setupTalkDialog(uin);
         if ( talkDialog == NULL )
         {
-                qDebug() << "messageReceived: ERROR: talk dialog shouldn't be null , uin: " << uin;
-                return;
+            qDebug() << "messageReceived: ERROR: talk dialog shouldn't be null , uin: " << uin;
+            return;
         }
 
-//        qDebug() << "Recv: " << rTime << "   but now: " << QDateTime::currentMSecsSinceEpoch();
+        //        qDebug() << "Recv: " << rTime << "   but now: " << QDateTime::currentMSecsSinceEpoch();
 
         talkDialog->appendMessage(contact->displayName() + "  " + util->timeStr(rTime) , body );
         talkDialog->show();
