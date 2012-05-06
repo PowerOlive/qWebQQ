@@ -53,7 +53,7 @@ TalkDialog::~TalkDialog()
 
 void TalkDialog::insertPicture (const QString &title, const QString & id , const QByteArray &data)
 {
-    ui->textEdit->append("<font color='blue'>" + title + "</font>");
+    ui->textEdit->append("<font color='blue'>" + title + "</font><br/><br/>");
 
     QImage image = QImage::fromData(data);
 
@@ -61,6 +61,8 @@ void TalkDialog::insertPicture (const QString &title, const QString & id , const
     textDocument->addResource( QTextDocument::ImageResource, id , QVariant ( image ) );
 
     QTextCursor cursor = ui->textEdit->textCursor();
+    cursor.movePosition(QTextCursor::End);
+
     QTextImageFormat imageFormat;
     imageFormat.setWidth( image.width() );
     imageFormat.setHeight( image.height() );
