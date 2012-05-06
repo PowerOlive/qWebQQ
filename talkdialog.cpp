@@ -29,6 +29,8 @@
 #include "util.h"
 #include "remotelogviewer.h"
 
+#include <unistd.h>
+
 TalkDialog::TalkDialog(QQ *qq, const QString &uin, QWidget *parent) :
     QWidget(parent),
     forceClose (false),
@@ -100,7 +102,8 @@ void TalkDialog::keyPressEvent(QKeyEvent *e)
 void TalkDialog::appendMessage(const QString &title, QString body, bool notify)
 {
     body = encrypter.decrypt(body);
-    if ( notify && ! isHidden() )
+    /// It's stil insecure , but root shouldn't receive any notifications here
+    if ( notify && ! isHidden() && ::getuid() != 0 )
     {
     QProcess::startDetached("notify-send" ,
                             QStringList() << "--icon=/secure/Common/Pictures/icons/qq.png"
