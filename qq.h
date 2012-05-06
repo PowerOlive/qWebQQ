@@ -193,6 +193,16 @@ public:
     explicit QQ(QObject *parent = 0);
 
     /*!
+        \brief fetch status string
+    */
+    void fetchLongNick (const QString & uin);
+
+    /*!
+        \brief fetch face image
+    */
+    void fetchSingleFaceImg (const QString & uin);
+
+    /*!
         \brief query personal info from map
     */
     QVariant personalInfo (const QString & field);
@@ -304,6 +314,9 @@ signals:
 
     /*! \brief kicked signal */
     void gotKicked (const QString & reason);
+
+    /*! \brief long nick fetched */
+    void longNickFetched (const QString & uin , const QString & lnick);
 
     /*! \brief when offline picture download complete */
     void offlinePicReceived (const QString & uin , const QString & identifier , const QByteArray & data);

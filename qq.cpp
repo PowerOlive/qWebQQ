@@ -48,6 +48,9 @@
 #define UPLOAD_FILE ""
 #define POST_SEND_FILE "http://d.web2.qq.com/channel/send_offfile2"
 
+// vfwebqq + [tuin]
+#define FETCH_LONG_NICK "http://s.web2.qq.com/api/get_long_nick?tuin=[%1]&vfwebqq=%2"
+
 // newstatus (en) , clientid , psessionid
 #define CHANGE_STATUS "http://d.web2.qq.com/channel/change_status2?newstatus=%1&clientid=%2&psessionid=%3"
 
@@ -120,6 +123,16 @@ QQ::QQ(QObject *parent) :
 QVariant QQ::personalInfo(const QString &field)
 {
     return personalInfoMap[field];
+}
+
+void QQ::fetchSingleFaceImg(const QString &uin)
+{
+    GET_FACE_RAND ( uin )
+}
+
+void QQ::fetchLongNick(const QString &uin)
+{
+    GET_REQUEST3 (QString (FETCH_LONG_NICK).arg(uin).arg(sessionMap["vfwebqq"].toString()));
 }
 
 void QQ::logout()
@@ -216,15 +229,15 @@ void QQ::readyReadPoll()
             message = message.trimmed().remove(QRegExp ("\n+$"));
             if ( ! message.isEmpty() )
             {
-//                if (message.startsWith("^EN^:"))
-//                {
-//                    message = QString::fromUtf8( QByteArray::fromBase64(message.remove("^EN^:").toAscii()) );
-//                    qDebug() << "Encrypted Message: " << message;
-//                }
-//                else
-//                {
-//                    qDebug() << "Normal Message: " << message;
-//                }
+                //                if (message.startsWith("^EN^:"))
+                //                {
+                //                    message = QString::fromUtf8( QByteArray::fromBase64(message.remove("^EN^:").toAscii()) );
+                //                    qDebug() << "Encrypted Message: " << message;
+                //                }
+                //                else
+                //                {
+                //                    qDebug() << "Normal Message: " << message;
+                //                }
 
                 emit messageReceived(from_uin, message , valueMap["time"].toInt());
             }
@@ -625,6 +638,17 @@ void QQ::finished(QNetworkReply *reply)
         if ( ! data.contains("ok") )
         {
             error ("logout failed: " + data);
+        }
+    }
+    /*! \brief long nick */
+    else if (url.startsWith("http://s.web2.qq.com/api/get_long_nick"))
+    {
+        QVariantList listA = util->getGeneralResult(data , "get_long_nick").toList();
+        foreach (QVariant l , listA)
+        {
+            QVariantMap lMap = l.toMap();
+            /// WARNING: choose between to_uin and uin ??
+            emit longNickFetched(lMap["uin"].toString() , lMap["lnick"].toString());
         }
     }
     else

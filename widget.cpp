@@ -40,6 +40,7 @@ Widget::Widget(QWidget *parent) :
     connect (&_qq , SIGNAL(gotKicked(QString)) , SLOT(gotKicked(QString)));
     connect (&_qq , SIGNAL(recentContactsReady()) , SLOT(recentContactsReady()));
     connect (&_qq , SIGNAL(inputNotify(QString)) , SLOT(inputNotify(QString)));
+    connect (&_qq , SIGNAL(longNickFetched(QString,QString)) , SLOT(longNickFetched(QString,QString)));
     connect (&_qq , SIGNAL(offlinePicReceived(QString,QString,QByteArray))
              , SLOT(offlineImageReceived(QString,QString,QByteArray)));
     connect (&_qq , SIGNAL(capchaRequired(QByteArray)) , SLOT(capchaReceived(QByteArray)));
@@ -64,6 +65,15 @@ Widget::~Widget()
     saveSettings();
 
     delete ui;
+}
+
+void Widget::longNickFetched(const QString &uin, const QString &lnick)
+{
+    TalkDialog *talkDialog = talkDialogMapping[uin];
+    if ( talkDialog != NULL )
+    {
+        talkDialog->setStatusLine(lnick);
+    }
 }
 
 void Widget::offlineFileReceived(const QString &uin, const QString &key, const QString &name,
@@ -199,6 +209,9 @@ void Widget::itemClicked(QTreeWidgetItem * item, int col)
         }
         else
         {
+            _qq.fetchLongNick(uin);
+            _qq.fetchSingleFaceImg(uin);
+
             talkDialog->show();
         }
     }

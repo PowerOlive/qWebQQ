@@ -69,14 +69,19 @@ public:
     }
 
     QVariant getGeneralResult (const QByteArray & data , const QString & debugInfo = QString());
-    QString timeStr (ulong secs = -1)
+    QString timeStr (ulong secs = 0)
     {
-        QDateTime dt;
+#define TIME_FORMAT "yyyy-MM-dd hh:mm:ss"
         if ( secs <= 0 )
-            dt.setMSecsSinceEpoch(QDateTime::currentMSecsSinceEpoch());
+        {
+            return QDateTime::currentDateTime().toString(TIME_FORMAT);
+        }
         else
+        {
+            QDateTime dt;
             dt.setMSecsSinceEpoch(secs * 1000);
-        return dt.toString("yyyy-MM-dd hh:mm:ss");
+            return dt.toString(TIME_FORMAT);
+        }
     }
 
     ContactStatus stringToStatus (const QString & qs)

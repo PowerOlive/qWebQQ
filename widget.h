@@ -109,6 +109,12 @@ private slots:
     void faceChanged(const QString & uin , const QByteArray & data);
 
     /*!
+        \brief
+        display long nick on talkdialogs
+    */
+    void longNickFetched (const QString & uin , const QString & lnick);
+
+    /*!
         \brief add contacts to widget
     */
     void contactsInfoReady ();
