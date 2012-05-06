@@ -55,7 +55,7 @@ public:
 
     void insertPicture (const QString & title , const QString & id , const QByteArray & data);
 
-    void appendMessage (const QString & title , QString body , bool notify = true);
+    void appendMessage (const QString & title , QString body , bool notify = true , bool self = false);
     void appendHTML (const QString & title , const QString & body);
 
     void setNick (const QString & nick);
@@ -79,6 +79,8 @@ private slots:
     }
 
     void on_enableEncryption_toggled(bool checked);
+
+    void on_toolButton_4_clicked();
 
 signals:
     void aboutToClose ();

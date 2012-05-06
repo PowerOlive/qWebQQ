@@ -10,5 +10,6 @@
         <file>img/epiphany-bookmarks.png</file>
         <file>img/small.png</file>
         <file>img/offline.jpg</file>
+        <file>img/edit-clear.png</file>
     </qresource>
 </RCC>

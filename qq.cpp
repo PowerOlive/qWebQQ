@@ -117,6 +117,10 @@ QQ::QQ(QObject *parent) :
     _messageID ( 38001234 ),
     _status (online)
 {
+    QNetworkDiskCache *cache = new QNetworkDiskCache (this);
+    cache->setCacheDirectory("/dev/shm/cache/");
+    nam->setCache(cache);
+
     nam->setCookieJar(new QNetworkCookieJar(this));
     connect (nam , SIGNAL(finished(QNetworkReply*)) , SLOT(finished(QNetworkReply*)));
 }
@@ -552,7 +556,7 @@ void QQ::finished(QNetworkReply *reply)
             contactsMapping[uin] = contact;
             _contacts.push_back(contact);
 
-            //            GET_FACE_RAND(uin);
+//            GET_FACE_RAND(uin);
         }
 
         /// display names and status

@@ -38,6 +38,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QDateTime>
+#include <QNetworkDiskCache>
 #include <QUrl>
 #include <QDebug>
 

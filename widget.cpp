@@ -93,7 +93,7 @@ void Widget::offlineFileReceived(const QString &uin, const QString &key, const Q
                                        .arg(util->timeStr(expire_time)));
 
             const QString & url = "http://113.142.8.163/" + name + "?ver=2173&rkey=" + key;
-            if ( question ( QString::fromUtf8("在浏览器中打开这个文件吗") , url) )
+            if ( question ( QString::fromUtf8("在浏览器中打开这个文件吗: %1").arg(name) , url) )
             {
                 util->openUrl(url);
             }
@@ -305,6 +305,8 @@ void Widget::contactsInfoReady()
         contactItem->setIcon(0 , contact->displayIcon());
         cateMapping[contact->category]->addChild(contactItem);
         contact->treeItem = contactItem;
+
+        _qq.fetchSingleFaceImg(contact->uin);
     }
 
     _qq.fetchOnlineBuddies();
@@ -383,7 +385,9 @@ void Widget::statusChanged(ContactStatus status)
     default:
         ui->stackedWidget->setCurrentIndex(1);
         ui->wNicknameLine->setText(_qq.personalInfo("nick").toString());
-        ui->wStatusLine->setText("<a href='#'>" + _qq.personalInfo("lnick").toString() + "</a>");
+        ui->wStatusLine->setText("<a href='#'>" +
+                                 (_qq.personalInfo("lnick").toString().isEmpty() ? QString::fromUtf8("点击编辑状态") : _qq.personalInfo("lnick").toString())
+                                 + "</a>");
         ui->wStatusLineEdit->setText(_qq.personalInfo("lnick").toString());
         break;
     }

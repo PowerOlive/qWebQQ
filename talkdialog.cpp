@@ -55,7 +55,7 @@ TalkDialog::~TalkDialog()
 
 void TalkDialog::insertPicture (const QString &title, const QString & id , const QByteArray &data)
 {
-    ui->textEdit->append("<font color='blue'>" + title + "</font><br/><br/>");
+    ui->textEdit->append("<font color='green'>" + title + "</font><br/><br/>");
 
     QImage image = QImage::fromData(data);
 
@@ -99,19 +99,26 @@ void TalkDialog::keyPressEvent(QKeyEvent *e)
     }
 }
 
-void TalkDialog::appendMessage(const QString &title, QString body, bool notify)
+void TalkDialog::appendMessage(const QString &title, QString body, bool notify, bool self)
 {
     body = encrypter.decrypt(body);
     /// It's stil insecure , but root shouldn't receive any notifications here
     if ( notify && ! isHidden() && ::getuid() != 0 )
     {
-    QProcess::startDetached("notify-send" ,
-                            QStringList() << "--icon=/secure/Common/Pictures/icons/qq.png"
-                            << QString::fromUtf8("消息来自： %1").arg(ui->nick->text())
-                            << body.left(10));
+        QProcess::startDetached("notify-send" ,
+                                QStringList() << "--icon=/secure/Common/Pictures/icons/qq.png"
+                                << QString::fromUtf8("消息来自： %1").arg(ui->nick->text())
+                                << body.left(10));
     }
 
-    ui->textEdit->append("<font color='blue'>" + title + "</font>");
+    if ( self )
+    {
+        ui->textEdit->append("<font color='blue'>" + title + "</font>");
+    }
+    else
+    {
+        ui->textEdit->append("<font color='green'>" + title + "</font>");
+    }
     ui->textEdit->append( body );
 }
 
@@ -152,7 +159,7 @@ void TalkDialog::on_sendButton_clicked()
     if ( _enableEncryption )
         body = encrypter.encrypt(body);
 
-    appendMessage( _qq->personalInfo("nick").toString() + " " + util->timeStr() , body , false );
+    appendMessage( _qq->personalInfo("nick").toString() + " " + util->timeStr() , body , false , true );
 
     _qq->sendMessage(_uin , body);
     ui->myTextBox->clear();
@@ -174,4 +181,9 @@ void TalkDialog::on_historyButton_clicked()
 void TalkDialog::on_enableEncryption_toggled(bool checked)
 {
     _enableEncryption = checked;
+}
+
+void TalkDialog::on_toolButton_4_clicked()
+{
+    ui->textEdit->clear();
 }
