@@ -82,7 +82,7 @@ public:
     {
         status = util->stringToStatus(txt);
         if ( treeItem != NULL )
-        {
+        {           
             if ( status != offline )
             {
                 QTreeWidgetItem *parent = treeItem->parent();

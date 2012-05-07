@@ -621,10 +621,10 @@ void QQ::finished(QNetworkReply *reply)
             if ( contact != NULL )
             {
                 contact->setStatus(bMap["status"].toString());
+                fetchSingleFaceImg(contact->uin);
             }
         }
 
-        emit recentContactsReady();
     }
     /*! \brief message sent status */
     else if (url.startsWith("http://d.web2.qq.com/channel/send_buddy_msg2"))

@@ -275,6 +275,7 @@ void Widget::contactsInfoReady()
 
 #define ADD_CONTACT_ITEM(name,index) do { \
     QTreeWidgetItem *topItem = new QTreeWidgetItem (QStringList() << name); \
+    topItem->setData(0 , Qt::UserRole , name); \
     cateMapping.insert(index , topItem); \
     ui->wFriendsTree->addTopLevelItem(topItem);  \
 } while (0);
@@ -305,8 +306,6 @@ void Widget::contactsInfoReady()
         contactItem->setIcon(0 , contact->displayIcon());
         cateMapping[contact->category]->addChild(contactItem);
         contact->treeItem = contactItem;
-
-        _qq.fetchSingleFaceImg(contact->uin);
     }
 
     _qq.fetchOnlineBuddies();
