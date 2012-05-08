@@ -97,6 +97,19 @@ public:
         }
     }
 
+    QString statusToStringCN (ContactStatus cs)
+    {
+        if ( statusRevMapCN.contains(cs) )
+        {
+            return statusRevMapCN[cs];
+        }
+        else
+        {
+            qDebug() << "enum2strCN: error converting: " << cs;
+            return "online";
+        }
+    }
+
     QString statusToString (ContactStatus cs)
     {
         if ( statusRevMap.contains(cs) )
@@ -112,7 +125,7 @@ public:
 
 private:
     QMap<QString,ContactStatus> statusMap;
-    QMap<ContactStatus,QString> statusRevMap;
+    QMap<ContactStatus,QString> statusRevMap , statusRevMapCN;
 
 signals:
     

@@ -106,10 +106,26 @@ public:
         if ( treeItem != NULL )
         {
             treeItem->setIcon(0 , displayIcon());
+            if ( status != online && status != offline )
+            {
+                treeItem->setText(0 , QString ("%1 - %2").arg(displayName()).arg(util->statusToStringCN(status)));
+            }
+            else
+            {
+                treeItem->setText(0 , displayName());
+            }
         }
         if ( recentTreeItem != NULL )
         {
             recentTreeItem->setIcon(0 , displayIcon());
+            if ( status != online && status != offline )
+            {
+                recentTreeItem->setText(0 , QString ("%1 - %2").arg(displayName()).arg(util->statusToStringCN(status)));
+            }
+            else
+            {
+                recentTreeItem->setText(0 , displayName());
+            }
         }
     }
 

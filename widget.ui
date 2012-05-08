@@ -10,6 +10,12 @@
     <height>391</height>
    </rect>
   </property>
+  <property name="baseSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">

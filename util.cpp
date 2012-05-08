@@ -39,6 +39,14 @@ Util::Util(QObject *parent) :
     statusMap[QString::fromUtf8("Q我吧")] = callme;
     statusMap[QString::fromUtf8("离开")] = away;
 
+    statusRevMapCN[online] = QString::fromUtf8("在线");
+    statusRevMapCN[busy] = QString::fromUtf8("忙碌");
+    statusRevMapCN[offline] = QString::fromUtf8("离线");
+    statusRevMapCN[silent] = QString::fromUtf8("静音");
+    statusRevMapCN[hidden] = QString::fromUtf8("隐身");
+    statusRevMapCN[callme] = QString::fromUtf8("Q我吧");
+    statusRevMapCN[away] = QString::fromUtf8("离开");
+
     statusMap["online"] = online;
     statusMap["busy"] = busy;
     statusMap["offline"] = offline;
