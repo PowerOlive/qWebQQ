@@ -18,5 +18,9 @@ InsecureQQ: use it at your own risk.
 
 [ Shortcut combinations ]
 * In talking dialog:
-	* CTRL + Enter:   send message
+	* ALT + S / CTRL + Enter:   send message
+
+[ TODO ]
+* File / Image sending
+* Use emblem to indicate contact login status 
 
