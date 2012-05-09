@@ -176,6 +176,10 @@ void Widget::gotKicked(const QString &reason)
 void Widget::closeEvent(QCloseEvent *)
 {
     _qq.logout();
+    foreach (TalkDialog* dlg , talkDialogMapping.values())
+    {
+        dlg->close();
+    }
 }
 
 TalkDialog* Widget::setupTalkDialog(const QString &uin)

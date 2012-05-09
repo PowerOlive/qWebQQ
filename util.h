@@ -69,6 +69,12 @@ public:
     }
 
     QVariant getGeneralResult (const QByteArray & data , const QString & debugInfo = QString());
+
+    QString currentTimeInSeconds ()
+    {
+        return QString::number(QDateTime::currentMSecsSinceEpoch() / 1000);
+    }
+
     QString timeStr (ulong secs = 0)
     {
 #define TIME_FORMAT "yyyy-MM-dd hh:mm:ss"

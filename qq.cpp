@@ -183,7 +183,7 @@ void QQ::poll2()
     }
 
     QByteArray data = "{\"clientid\":" + _clientid + ",\"psessionid\":\"" + sessionMap["psessionid"].toByteArray() + "\",\"key\":0,\"ids\":[]}";
-    data = "r=" + data.toPercentEncoding() + "&clientid=" + _clientid + "&psessionid=" + sessionMap["psessionid"].toByteArray();
+    data = "t=" + util->currentTimeInSeconds().toAscii() + "&r=" + data.toPercentEncoding() + "&clientid=" + _clientid + "&psessionid=" + sessionMap["psessionid"].toByteArray();
 
     QNetworkRequest req (QString(QQ_POLL2_URL) );
     req.setRawHeader("Accept-Encoding" , "gzip,deflate,sdch");
