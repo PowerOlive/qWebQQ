@@ -178,7 +178,8 @@ void Widget::closeEvent(QCloseEvent *)
     _qq.logout();
     foreach (TalkDialog* dlg , talkDialogMapping.values())
     {
-        dlg->close();
+        if ( dlg != NULL )
+            dlg->close();
     }
 }
 
