@@ -455,7 +455,7 @@ void Widget::on_wStatusLineEdit_returnPressed()
 
     if ( prevStatus != newStatus )
     {
-        ui->wStatusLine->setText("<a href='#'>" + newStatus.isEmpty() ? QString::fromUtf8("点击编辑状态") : newStatus + "</a>");
+        ui->wStatusLine->setText("<a href='#'>" + (newStatus.isEmpty() ? QString::fromUtf8("点击编辑状态") : newStatus) + "</a>");
         _qq.setLongNick(newStatus);
     }
 
