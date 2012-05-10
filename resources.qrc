@@ -11,5 +11,6 @@
         <file>img/small.png</file>
         <file>img/offline.jpg</file>
         <file>img/edit-clear.png</file>
+        <file>img/starting_logo.gif</file>
     </qresource>
 </RCC>

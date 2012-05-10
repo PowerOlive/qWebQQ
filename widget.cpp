@@ -450,12 +450,12 @@ void Widget::on_wStatusLine_linkActivated(const QString &link)
 
 void Widget::on_wStatusLineEdit_returnPressed()
 {
-    const QString & prevStatus = ui->wStatusLine->text();
-    const QString & newStatus = ui->wStatusLineEdit->text();
+    const QString & prevStatus = ui->wStatusLine->text().trimmed();
+    const QString & newStatus = ui->wStatusLineEdit->text().trimmed();
 
     if ( prevStatus != newStatus )
     {
-        ui->wStatusLine->setText("<a href='#'>" + newStatus + "</a>");
+        ui->wStatusLine->setText("<a href='#'>" + newStatus.isEmpty() ? QString::fromUtf8("点击编辑状态") : newStatus + "</a>");
         _qq.setLongNick(newStatus);
     }
 
