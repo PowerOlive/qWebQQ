@@ -208,7 +208,11 @@ void Widget::itemClicked(QTreeWidgetItem * item, int col)
 {
     /// is top level item
     QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(sender());
-    if ( ui->wRecentTree != treeWidget || ( ui->wFriendsTree == treeWidget && ! item->parent() ) )
+    if ( ui->wRecentTree == treeWidget || ( ui->wFriendsTree == treeWidget && item->parent() ) )
+    {
+
+    }
+    else
     {
         return;
     }
