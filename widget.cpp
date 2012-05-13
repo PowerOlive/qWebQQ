@@ -206,6 +206,13 @@ TalkDialog* Widget::setupTalkDialog(const QString &uin)
 
 void Widget::itemClicked(QTreeWidgetItem * item, int col)
 {
+    /// is top level item
+    QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(sender());
+    if ( ui->wRecentTree != treeWidget || ( ui->wFriendsTree == treeWidget && ! item->parent() ) )
+    {
+        return;
+    }
+
     const QString & uin = item->data(col , Qt::UserRole).toString();
     if ( ! uin.isEmpty() )
     {

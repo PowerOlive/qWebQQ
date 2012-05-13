@@ -16,6 +16,10 @@
     <height>32</height>
    </size>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/img/big.png</normaloff>:/img/big.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">

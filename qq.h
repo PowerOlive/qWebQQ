@@ -305,6 +305,8 @@ public:
 
     void changeStatus (const ContactStatus & cs);
 
+    void fetchLog (const QString & tuin , int page = 0);
+
 private:
     QByteArray _ptwebqq;
 
@@ -352,6 +354,11 @@ signals:
     void offlineFileReceived (const QString & uin , const QString & key ,
                               const QString & name , const int & expire_time ,
                               const int & send_time);
+
+    /*!
+        \brief log stored in remote server
+    */
+    void logReady (const QByteArray & json);
 
     /*! \brief kicked signal */
     void gotKicked (const QString & reason);

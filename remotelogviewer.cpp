@@ -27,23 +27,117 @@
 #include "remotelogviewer.h"
 #include "ui_remotelogviewer.h"
 
-RemoteLogViewer::RemoteLogViewer(QQ *qq , QWidget *parent) :
+RemoteLogViewer::RemoteLogViewer(QQ *qq, const QString &title, const QString &uin, QWidget *parent):
     QWidget(parent),
-    ui(new Ui::RemoteLogViewer),
-    _page (0)
+    ui(new Ui::RemoteLogViewer)
 {
     ui->setupUi(this);
     _qq = qq;
+    _uin = uin;
+    _title = title;
+
+    justLoaded = true;
+
+    _qq->fetchLog(_uin);
+
+    connect (_qq , SIGNAL(logReady(QByteArray)) , this , SLOT(processLog(QByteArray)));
 
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
 RemoteLogViewer::~RemoteLogViewer()
 {
+    disconnect (_qq , SIGNAL(logReady(QByteArray)) , this , SLOT(processLog(QByteArray)));
+
     delete ui;
 }
 
 void RemoteLogViewer::on_pushButton_clicked()
 {
     close ();
+}
+
+void RemoteLogViewer::processLog(const QByteArray &log)
+{
+    QJson::Parser parser;
+    bool ok = false;
+
+    ui->textEdit->clear();
+
+    QVariantMap mapA = parser.parse(log , &ok).toMap();
+    if ( ! ok )
+    {
+        qDebug() << "Syntax error of log";
+        return;
+    }
+
+    if ( mapA.value("ret").toInt() != 0 || mapA.value("tuin").toString() != _uin )
+    {
+        qDebug() << "Retcode: " << mapA.value("ret").toInt();
+        return;
+    }
+
+    ui->logPage->setMaximum(mapA.value("total").toInt());
+    if ( justLoaded )
+    {
+        justLoaded = false;
+        ui->logPage->setValue(ui->logPage->maximum());
+    }
+
+    foreach (const QVariant & v , mapA.value("chatlogs").toList())
+    {
+        const QVariantMap & vMap = v.toMap();
+        // 16: what you say ; 17: what he says
+        const int & cmd = vMap.value("cmd").toInt();
+        const QString & time = util->timeStr(vMap.value("time").toInt());
+
+        QString msg;
+        foreach (const QVariant & m , vMap.value("msg").toList())
+        {
+            if ( ! msg.isEmpty() )
+                msg.append("\n");
+            msg.append(m.toString());
+        }
+
+        msg = msg.trimmed();
+
+        if ( msg.isEmpty() )
+            continue;
+
+        if ( cmd == 16 )
+        {
+            ui->textEdit->append(QString("<font color='green'>%1 %2</font>").arg(_title).arg(time));
+        }
+        else
+        {
+            ui->textEdit->append(QString("<font color='blue'>%1 %2</font>").arg(_title).arg(time));
+        }
+
+        ui->textEdit->append(msg);
+    }
+}
+
+void RemoteLogViewer::on_logPage_valueChanged(int arg1)
+{
+    if ( arg1 == ui->logPage->minimum() )
+        ui->prevPage->setEnabled(false);
+    else
+        ui->prevPage->setEnabled(true);
+
+    if ( arg1 == ui->logPage->maximum() )
+        ui->nextPage->setEnabled(false);
+    else
+        ui->nextPage->setEnabled(true);
+
+    _qq->fetchLog(_uin , arg1);
+}
+
+void RemoteLogViewer::on_prevPage_clicked()
+{
+    ui->logPage->setValue(ui->logPage->value() - 1);
+}
+
+void RemoteLogViewer::on_nextPage_clicked()
+{
+    ui->logPage->setValue(ui->logPage->value() + 1);
 }

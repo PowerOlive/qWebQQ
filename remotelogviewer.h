@@ -29,6 +29,7 @@
 
 #include <QWidget>
 #include "qq.h"
+#include "qjson/parser.h"
 
 namespace Ui {
 class RemoteLogViewer;
@@ -39,16 +40,25 @@ class RemoteLogViewer : public QWidget
     Q_OBJECT
     
 public:
-    explicit RemoteLogViewer(QQ *qq , QWidget *parent = 0);
+    explicit RemoteLogViewer(QQ *qq , const QString & title , const QString & uin , QWidget *parent = 0);
     ~RemoteLogViewer();
     
 private slots:
     void on_pushButton_clicked();
 
+    void processLog (const QByteArray & log);
+
+    void on_logPage_valueChanged(int arg1);
+
+    void on_prevPage_clicked();
+
+    void on_nextPage_clicked();
+
 private:
     Ui::RemoteLogViewer *ui;
     QQ *_qq;
-    int _page;
+    bool justLoaded;
+    QString _uin , _title;
 };
 
 #endif // REMOTELOGVIEWER_H

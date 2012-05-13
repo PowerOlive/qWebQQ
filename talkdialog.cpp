@@ -34,12 +34,12 @@
 TalkDialog::TalkDialog(QQ *qq, const QString &uin, QWidget *parent) :
     QWidget(parent),
     forceClose (false),
-    _uin (uin),
     ui(new Ui::TalkDialog),
     _enableEncryption (false)
 {
     ui->setupUi(this);
     _qq = qq;
+    _uin = uin;
 
     encrypter.setProvider(new Base64Provider());
     encrypter.setALgorithmPrefix("^ENC^:");
@@ -174,7 +174,7 @@ void TalkDialog::on_toolButton_3_clicked()
 
 void TalkDialog::on_historyButton_clicked()
 {
-    RemoteLogViewer *logViewer = new RemoteLogViewer (_qq);
+    RemoteLogViewer *logViewer = new RemoteLogViewer (_qq , _title , _uin);
     logViewer->show();
 }
 

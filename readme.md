@@ -10,6 +10,7 @@ InsecureQQ: use it at your own risk.
 
 [ Feature Enabled ]
 * Image receiving (Won't display anything with a failed link)
+* Remote log viewer (up to 30 days history)
 * Offline file receiving
 * Unlimited screen shaking (Fuck tencent for this feature)
 * Chaning "long nick"

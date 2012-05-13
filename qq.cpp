@@ -40,6 +40,9 @@
 #define SEND_BUDDY_MSG "http://d.web2.qq.com/channel/send_buddy_msg2"
 #define SET_LONG_NICK "http://s.web2.qq.com/api/set_long_nick2"
 
+// tuin , vfwebqq , page=0
+#define LOG_URL "http://web.qq.com/cgi-bin/webqq_chat/?cmd=1&tuin=%1&vfwebqq=%2&page=%3&row=10&callback=cLog"
+
 #define QQ_LOGOUT "http://d.web2.qq.com/channel/logout2?ids=&clientid=%1&psessionid=%2"
 
 // send file: upload to server , get a file path in return , and post to user
@@ -131,6 +134,11 @@ void QQ::setLongNick(const QString &lnick)
                          sessionMap["vfwebqq"].toByteArray() + "%22%7D");
 
     POST_REQUEST ( QString(SET_LONG_NICK) , postData);
+}
+
+void QQ::fetchLog(const QString &tuin, int page)
+{
+    GET_REQUEST3(QString(LOG_URL).arg(tuin).arg(sessionMap["vfwebqq"].toString()).arg(page));
 }
 
 QVariant QQ::personalInfo(const QString &field)
@@ -309,7 +317,7 @@ void QQ::readyReadPoll()
         else
         {
             qDebug() << "Message: " << mMap["poll_type"];
-            qDebug() << mMap["value"];
+            qDebug() << mMap["value"].toString();
         }
     }
 }
@@ -673,6 +681,28 @@ void QQ::finished(QNetworkReply *reply)
         {
             error ("set long nick failed: " + data);
         }
+    }
+    /*! \brief logs */
+    else if ( url.startsWith("http://web.qq.com/cgi-bin/webqq_chat/") )
+    {
+        QString data2 (data);
+        data2 = data2.remove(QRegExp ("^cLog\\("));
+        data2.chop(2);
+
+        data2.replace ("chatlogs:" , "\"chatlogs\":");
+        data2.replace ("cmd:" , "\"cmd\":");
+        data2.replace ("msg:" , "\"msg\":");
+        data2.replace ("page:" , "\"page\":");
+        data2.replace ("ret:" , "\"ret\":");
+        data2.replace ("seq:" , "\"seq\":");
+        data2.replace ("time:" , "\"time\":");
+        data2.replace ("total:" , "\"total\":");
+        data2.replace ("tuin:" , "\"tuin\":");
+        data2.replace ("type:" , "\"type\":");
+        data2.replace ("ver:" , "\"ver\":");
+
+        emit logReady(data2.toAscii());
+
     }
     else
     {
