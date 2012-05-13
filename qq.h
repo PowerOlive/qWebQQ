@@ -305,6 +305,7 @@ public:
 
     void changeStatus (const ContactStatus & cs);
 
+    void clearLogs (const QString & tuin);
     void fetchLog (const QString & tuin , int page = 0);
 
 private:

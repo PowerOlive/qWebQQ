@@ -43,6 +43,9 @@
 // tuin , vfwebqq , page=0
 #define LOG_URL "http://web.qq.com/cgi-bin/webqq_chat/?cmd=1&tuin=%1&vfwebqq=%2&page=%3&row=10&callback=cLog"
 
+// tuin , vfwebqq
+#define CLEARLOG_URL "http://web.qq.com/cgi-bin/webqq_chat/?cmd=2&tuin=%1&vfwebqq=%2&callback=showDeleteResult"
+
 #define QQ_LOGOUT "http://d.web2.qq.com/channel/logout2?ids=&clientid=%1&psessionid=%2"
 
 // send file: upload to server , get a file path in return , and post to user
@@ -134,6 +137,11 @@ void QQ::setLongNick(const QString &lnick)
                          sessionMap["vfwebqq"].toByteArray() + "%22%7D");
 
     POST_REQUEST ( QString(SET_LONG_NICK) , postData);
+}
+
+void QQ::clearLogs(const QString &tuin)
+{
+    GET_REQUEST3(QString(CLEARLOG_URL).arg(tuin).arg(sessionMap["vfwebqq"].toString()));
 }
 
 void QQ::fetchLog(const QString &tuin, int page)
@@ -703,6 +711,14 @@ void QQ::finished(QNetworkReply *reply)
 
         emit logReady(data2.toAscii());
 
+    }
+    /*! \brief clear log*/
+    else if ( url.startsWith("http://web.qq.com/cgi-bin/webqq_chat/") )
+    {
+        if ( data.indexOf("ret:0") == -1 )
+        {
+            qDebug() << "Error deleting logs: " << data;
+        }
     }
     else
     {

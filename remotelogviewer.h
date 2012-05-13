@@ -42,6 +42,17 @@ class RemoteLogViewer : public QWidget
 public:
     explicit RemoteLogViewer(QQ *qq , const QString & title , const QString & uin , QWidget *parent = 0);
     ~RemoteLogViewer();
+
+    bool question (const char *msg)
+    {
+        return question (QString::fromUtf8(msg));
+    }
+
+    bool question (const QString & msg)
+    {
+        return QMessageBox::Yes == QMessageBox::question(this , QString::fromUtf8("问题") ,
+                                                         msg , QMessageBox::Yes , QMessageBox::No);
+    }
     
 private slots:
     void on_pushButton_clicked();
@@ -53,6 +64,8 @@ private slots:
     void on_prevPage_clicked();
 
     void on_nextPage_clicked();
+
+    void on_clearLogs_clicked();
 
 private:
     Ui::RemoteLogViewer *ui;

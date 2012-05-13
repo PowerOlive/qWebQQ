@@ -106,7 +106,7 @@ void RemoteLogViewer::processLog(const QByteArray &log)
 
         if ( cmd == 16 )
         {
-            ui->textEdit->append(QString("<font color='green'>%1 %2</font>").arg(_title).arg(time));
+            ui->textEdit->append(QString::fromUtf8("<font color='green'>我 %2</font>").arg(time));
         }
         else
         {
@@ -140,4 +140,13 @@ void RemoteLogViewer::on_prevPage_clicked()
 void RemoteLogViewer::on_nextPage_clicked()
 {
     ui->logPage->setValue(ui->logPage->value() + 1);
+}
+
+void RemoteLogViewer::on_clearLogs_clicked()
+{
+    if ( question("删除聊天记录吗?"))
+    {
+        _qq->clearLogs(_uin);
+        ui->textEdit->setText(QString::fromUtf8("暂无记录"));
+    }
 }
