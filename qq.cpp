@@ -55,6 +55,8 @@
 #define UPLOAD_FILE ""
 #define POST_SEND_FILE "http://d.web2.qq.com/channel/send_offfile2"
 
+#define GROUP_LIST_URL "http://s.web2.qq.com/api/get_group_name_list_mask2"
+
 // vfwebqq + [tuin]
 #define FETCH_LONG_NICK "http://s.web2.qq.com/api/get_long_nick?tuin=[%1]&vfwebqq=%2"
 
@@ -126,6 +128,25 @@ QQ::QQ(QObject *parent) :
     QNetworkDiskCache *cache = new QNetworkDiskCache (this);
     cache->setCacheDirectory("/dev/shm/cache/");
     nam->setCache(cache);
+
+    const char *http_proxy = getenv("http_proxy");
+    if ( http_proxy != NULL )
+    {
+        /// http://ip:port
+        QStringList info = QString (http_proxy).remove("http://").split(":");
+        if ( info.length() == 2 )
+        {
+            QNetworkProxy proxy;
+            proxy.setType(QNetworkProxy::HttpProxy);
+            proxy.setHostName(info.at(0));
+            proxy.setPort(info.at(1).toInt());
+            nam->setProxy(proxy);
+
+            qDebug() << "Using proxy: " << proxy.hostName() << " : " << proxy.port();
+
+            nam->get(QNetworkRequest (QString("http://checkip.dyndns.com/")));
+        }
+    }
 
     nam->setCookieJar(new QNetworkCookieJar(this));
     connect (nam , SIGNAL(finished(QNetworkReply*)) , SLOT(finished(QNetworkReply*)));
@@ -385,7 +406,7 @@ void QQ::finished(QNetworkReply *reply)
 
     if ( httpStatusCode < 200 || httpStatusCode >= 400 )
     {
-        qDebug() << "Network failure: " << reply->url().toString();
+        qDebug() << "Network failure: " << httpStatusCode << " " << reply->url().toString();
         if ( url.startsWith("http://ptlogin2.qq.com/check" ) )
         {
             error ( QString::fromUtf8("无法登录: 网络链接失败") , Pop );
@@ -482,6 +503,9 @@ void QQ::finished(QNetworkReply *reply)
         /*! \brief retrieve personal info */
         GET_REQUEST ( QString(QQ_PERSONAL_INFO) );
 
+        /*! \brief get groups */
+        GET_REQUEST3 ( QString(GROUP_LIST_URL) );
+
         /*! face image */
         GET_FACE_RAND( sessionMap["uin"].toString() );
 
@@ -572,7 +596,7 @@ void QQ::finished(QNetworkReply *reply)
             contactsMapping[uin] = contact;
             _contacts.push_back(contact);
 
-//            GET_FACE_RAND(uin);
+            //            GET_FACE_RAND(uin);
         }
 
         /// display names and status
@@ -681,6 +705,14 @@ void QQ::finished(QNetworkReply *reply)
             /// WARNING: choose between to_uin and uin ??
             emit longNickFetched(lMap["uin"].toString() , lMap["lnick"].toString());
         }
+    }
+    /*! \brief group list */
+    else if (url.startsWith(GROUP_LIST_URL) )
+    {
+        QVariantMap mapA = util->getGeneralResult(data , "get_long_nick").toMap();
+
+        qDebug() << "Not handling group info now";
+//        qDebug() << mapA.value("gnamelist") << mapA.value("gmarklist");
     }
     /*! set long nick */
     else if (url.startsWith("http://s.web2.qq.com/api/set_long_nick2"))

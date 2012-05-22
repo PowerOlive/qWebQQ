@@ -35,6 +35,7 @@
 #include <QTimer>
 #include <QLineEdit>
 #include <QNetworkCookieJar>
+#include <QNetworkProxy>
 #include <QMessageBox>
 #include <QMenu>
 #include <QDateTime>

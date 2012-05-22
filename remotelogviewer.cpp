@@ -99,7 +99,7 @@ void RemoteLogViewer::processLog(const QByteArray &log)
             msg.append(m.toString());
         }
 
-        msg = msg.trimmed();
+        msg = msg.trimmed().replace("&","&amp;").replace(">","&gt;").replace("<","&lt;");
 
         if ( msg.isEmpty() )
             continue;
