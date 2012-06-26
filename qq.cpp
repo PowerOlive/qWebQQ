@@ -1,10 +1,10 @@
 /* BEGIN_COMMON_COPYRIGHT_HEADER
  * (c)LGPL2+
  *
- * Razor - a lightweight, Qt based, desktop toolset
- * http://razor-qt.org
+ * 
+ * 
  *
- * Copyright: 2012 Razor team
+ * Copyright: 2012 Labo A.L
  * Authors:
  *   Aaron Lewis <the.warl0ck.1989@gmail.com>
  *
@@ -29,7 +29,8 @@
 /*!
     \brief non-variable urls
 */
-#define QQ_LOGIN_URL "http://ptlogin2.qq.com/login?remember_uin=1&aid=1003903&h=1&ptlang=2052&from_ui=1&dummy&fp=loginerroralert&pttype=1"
+//#define QQ_LOGIN_URL "http://ptlogin2.qq.com/login?remember_uin=1&aid=1003903&h=1&ptlang=2052&from_ui=1&dummy&fp=loginerroralert&pttype=1"
+#define QQ_LOGIN_URL "http://ptlogin2.qq.com/login?webqq_type=10&remember_uin=1&login2qq=1&aid=1003903&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=2-7-10801&mibao_css=m_webqq&t=1&g=1"
 #define QQ_VERIFY_CODE "http://captcha.qq.com/getimage?aid=1003903&uin="
 #define QQ_LOGIN_STATUS "http://d.web2.qq.com/channel/login2"
 #define QQ_POLL2_URL "http://d.web2.qq.com/channel/poll2"
@@ -39,6 +40,8 @@
 #define RECENT_CONTACTS "http://d.web2.qq.com/channel/get_recent_list2"
 #define SEND_BUDDY_MSG "http://d.web2.qq.com/channel/send_buddy_msg2"
 #define SET_LONG_NICK "http://s.web2.qq.com/api/set_long_nick2"
+
+#define INIT_LOGIN_URL "http://ui.ptlogin2.qq.com/cgi-bin/login?target=self&style=5&mibao_css=m_webqq&appid=1003903&enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fweb.qq.com%2Floginproxy.html&f_url=loginerroralert&strong_login=1&login_state=10&t=20120619001"
 
 // tuin , vfwebqq , page=0
 #define LOG_URL "http://web.qq.com/cgi-bin/webqq_chat/?cmd=1&tuin=%1&vfwebqq=%2&page=%3&row=10&callback=cLog"
@@ -78,9 +81,9 @@
 
 #define GET_REQUEST(a) do { \
     QNetworkRequest req (a);  \
-    req.setRawHeader("Accept-Encoding" , "identity"); \
+    req.setRawHeader("Accept-Encoding" , "gzip"); \
     req.setRawHeader("User-Agent" , USER_AGENT); \
-    req.setRawHeader("Referer" , "http://ui.ptlogin2.qq.com/cgi-bin/login?target=self&style=5&mibao_css=m_webqq&appid=1003903&enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fwebqq.qq.com%2Floginproxy.html&f_url=loginerroralert&strong_login=1&login_state=10&t=20110909003"); \
+    req.setRawHeader("Referer" , "http://ui.ptlogin2.qq.com/cgi-bin/login?target=self&style=5&mibao_css=m_webqq&appid=1003903&enable_qlogin=0&no_verifyimg=1&s_url=http%3A%2F%2Fweb.qq.com%2Floginproxy.html&f_url=loginerroralert&strong_login=1&login_state=10&t=20120504001"); \
     nam->get(req); \
     } while (0);
 
@@ -126,7 +129,7 @@ QQ::QQ(QObject *parent) :
     _status (online)
 {
     QNetworkDiskCache *cache = new QNetworkDiskCache (this);
-    cache->setCacheDirectory("/dev/shm/cache/");
+    cache->setCacheDirectory("/dev/shm/qq.cache/");
     nam->setCache(cache);
 
     const char *http_proxy = getenv("http_proxy");
@@ -366,7 +369,7 @@ void QQ::login(const QString &qq, const QString &pw, ContactStatus newStatus)
         _userPassword = QCryptographicHash::hash( _userPassword , QCryptographicHash::Md5 );
     _userPassword = _userPassword.toHex().toUpper();
 
-    GET_REQUEST( QString("http://ptlogin2.qq.com/check?uin=" + _uid + "&appid=1003903&r=0.5419327881638609") );
+    GET_REQUEST ( QString (INIT_LOGIN_URL) );
 }
 
 void QQ::setVerifyCode(const QString &code)
@@ -377,7 +380,6 @@ void QQ::setVerifyCode(const QString &code)
     qqLoginUrl.addQueryItem("verifycode" , code);
     qqLoginUrl.addQueryItem("u" , _uid);
     qqLoginUrl.addQueryItem("p" , QCryptographicHash::hash(_userPassword + code.toAscii() , QCryptographicHash::Md5).toHex().toUpper());
-    qqLoginUrl.addEncodedQueryItem("u1" , "http%3A%2F%2Fweb2.qq.com%2Floginproxy.html%3Fstrong%3Dtrue");
 
     GET_REQUEST(qqLoginUrl)
 }
@@ -406,21 +408,30 @@ void QQ::finished(QNetworkReply *reply)
 
     if ( httpStatusCode < 200 || httpStatusCode >= 400 )
     {
-        qDebug() << "Network failure: " << httpStatusCode << " " << reply->url().toString();
-        if ( url.startsWith("http://ptlogin2.qq.com/check" ) )
+        qDebug() << "Network failure: " << httpStatusCode << " " << reply->url().toString() << " : " << reply->errorString();
+        if ( url.startsWith("http://ui.ptlogin2.qq.com/cgi-bin/login" ) )
         {
             error ( QString::fromUtf8("无法登录: 网络链接失败") , Pop );
         }
         else
-            qDebug() << "Network failure: " << url;
+            qDebug() << "Network failure: " << url << " : " << reply->errorString();
 
         return;
     }
 
     const QByteArray & data = reply->readAll();
 
+    qDebug() << "URL: " << url;
+    qDebug() << "Data: " << data;
+    qDebug() << "Headers: " << reply->request().rawHeader("Cookie");
+    qDebug() << "=---------=";
+
+    if ( url.startsWith("http://ui.ptlogin2.qq.com/cgi-bin/login") )
+    {
+        GET_REQUEST( QString("http://check.ptlogin2.qq.com/check?uin=" + _uid + "&appid=1003903&r=0.5419327881638609") );
+    }
     /*! \brief Request of auth code */
-    if ( url.startsWith("http://ptlogin2.qq.com/check") )
+    else if ( url.startsWith("http://check.ptlogin2.qq.com/check") )
     {
         QRegExp ptui_checkVC ("ptui_checkVC\\(.*'(![A-Z0-9]{3}).*\\);");
         if ( ptui_checkVC.indexIn(data) != -1 )

@@ -1,10 +1,10 @@
 /* BEGIN_COMMON_COPYRIGHT_HEADER
  * (c)LGPL2+
  *
- * Razor - a lightweight, Qt based, desktop toolset
- * http://razor-qt.org
+ * 
+ * 
  *
- * Copyright: 2012 Razor team
+ * Copyright: 2012 Labo A.L
  * Authors:
  *   Aaron Lewis <the.warl0ck.1989@gmail.com>
  *
