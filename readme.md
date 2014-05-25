@@ -1,3 +1,10 @@
+### DEVELOPER NOTICE
+
+Please notice: This project has been deperecated since last commit.
+The current login protocol needs a bit tweak and I'm no longer interested in maintaining this project.
+
+### Original description
+
 InsecureQQ: use it at your own risk.
 
 [ Known Bugs ]
